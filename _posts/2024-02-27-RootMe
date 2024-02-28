@@ -3,7 +3,7 @@
 ## Nmap
 Nmap reveals only ports 22 (SSH) and 80 (HTTP) and nothing else that seems like a possible attack vector.
 
-![image of web page](image.png)
+![image of web page](Images/home-page.png)
 
 
 ## Basic Web Enumeration
@@ -11,20 +11,20 @@ The main page doesn't reveal much so we may have to do more manual enumeration
 
 A quick Gobuster serarch reveals the `/panel` directory.
 
-![file upload page](image-1.png)
+![file upload page](Images/file-upload.png)
 
 Going to the page shows a file upload screen. Trying to upload a PHP reverse shell shows a message saying that PHP isn't allowed.
-![alt text](image-2.png)
+![Unsuccessful upload](Images/unsuccessful-upload.png)
 
 ## Bypassing Upload Restrictions
 A quick Google search shows that sometimes just replacing the `.php` file extension will allow us to upload the file, while also using an extension that PHP will recognize. [Here](https://vulp3cula.gitbook.io/hackers-grimoire/exploitation/web-application/file-upload-bypass) is a list to possible bypassing file extensions for different kinds of files.
 Replacing the `.php` file extension with `.phtml` allows the file to be sucessfully uploaded.
-![successful upload](image-3.png)
+![successful upload](Images/successful-upload.png)
 
 
 ## Getting a Shell
 Guessing the folder name of `/uploads` and accessing it shows our newly uploaded shell. Opening a netcat listener in your terminal with `nc -lvnp 4444` or whichever port you used in your shell file, and opening the file in your browser or using curl will you grant you a shell.
-![alt text](image-4.png)
+![Shell as www-data](Images/user-shell.png)
 
 ## Getting User Flag
 After getting our shell, the first thing you want to do is make it a full TTY using this command `python -c 'import pty;pty.spawn("/bin/bash")'`. 
@@ -39,7 +39,7 @@ For privilege escalation, I recommend using Linpeas, but I didn't for this box a
 
 One of the binaries with the SUID bit was Python. After looking on GTFOBins, a resource for privilege escalation, I found that if Python had its SUID bit set, you can use that to get a privileged shell. After running the command that I was given, I was dropped into a shell as the `root` user.
 
-![alt text](image-5.png)
+![Root Shell](Images/root.shell.png)
 
 Getting the root flag is now as easy as running `cat /root/root.txt`.
 
